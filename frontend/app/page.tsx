@@ -53,10 +53,10 @@ export default function Home() {
   };
 
   return (
-    <div className="container">
+    <div className="flex h-screen bg-gray-100">
       <Aside onSelectConversation={setSelectedConversationId} />
-      <div className="main">
-        <h1 className="header">Jarvis</h1>
+      <div className="flex flex-col flex-1 p-6">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">Jarvis</h1>
         <ChatBox messages={messages} />
         <InputBox onSendMessage={sendMessage} />
       </div>
