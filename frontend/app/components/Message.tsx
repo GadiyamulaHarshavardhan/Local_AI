@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import CodeSnippet from "./CodeSnippet";
-import { UserIcon, BotIcon } from "lucide-react";
+import { UserIcon } from "lucide-react";
+import { FaGhost } from "react-icons/fa";
 import CopyButton from "./CopyButton";
 
 interface MessageProps {
@@ -18,48 +19,52 @@ export default function Message({ role, content, isTyping }: MessageProps) {
   const language = isCodeSnippet ? code.split("\n")[0].trim() || "javascript" : "";
 
   return (
-    <div className={`flex w-full ${role === "user" ? "justify-end" : "justify-start"}`}>
-      <div 
-        className={`flex items-start gap-2 max-w-[70%] mb-4 ${role === "user" ? "flex-row-reverse" : "flex-row"}`}
-        onMouseEnter={() => setShowCopyButton(true)}
-        onMouseLeave={() => setShowCopyButton(false)}
-      >
-        {/* Icon - appears on opposite sides based on role */}
+    <div 
+      className={`flex w-full ${role === "user" ? "justify-end" : "justify-start"} mb-4`}
+      onMouseEnter={() => setShowCopyButton(true)}
+      onMouseLeave={() => setShowCopyButton(false)}
+    >
+      <div className={`flex max-w-[80%] ${role === "user" ? "flex-row-reverse" : ""}`}>
+        {/* Theme-aware icon */}
         <div className={`flex-shrink-0 ${role === "user" ? "ml-2" : "mr-2"}`}>
           {role === "user" ? (
-            <UserIcon className="w-5 h-5 text-blue-400" />
+            <UserIcon className="w-5 h-5 text-gray-400 dark:text-gray-600" />
           ) : (
-            <BotIcon className="w-5 h-5 text-gray-400" />
+            <FaGhost className="w-5 h-5 text-gray-400 dark:text-gray-200" />
           )}
         </div>
         
-        {/* Message Bubble */}
-        <div
-          className={`relative p-3 rounded-lg ${
-            role === "user"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-700 text-white"
-          }`}
-        >
-          {/* Copy button - only shown on hover */}
-          {showCopyButton && (
-            <div className={`absolute ${role === "user" ? "left-2" : "right-2"} top-2`}>
-              <CopyButton textToCopy={isCodeSnippet ? code : content} />
-            </div>
-          )}
-
-          {isCodeSnippet ? (
-            <CodeSnippet code={code.replace(language, "").trim()} language={language} />
-          ) : (
-            <p className="whitespace-pre-wrap">{content}</p>
-          )}
+        {/* Message content container */}
+        <div className="relative">
+          {/* Theme-aware message bubble */}
+          <div className={`
+            px-4 py-2 rounded-lg relative
+            ${role === "user" 
+              ? "bg-blue-600 text-white dark:bg-gray-700" 
+              : "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-100"}
+          `}>
+            {content && (isCodeSnippet ? (
+              <CodeSnippet code={code.replace(language, "").trim()} language={language} />
+            ) : (
+              <p className="whitespace-pre-wrap">{content}</p>
+            ))}
+            
+            {/* Copy button - only shown on hover */}
+            {showCopyButton && content && (
+              <div className={`absolute ${role === "user" ? "-left-8" : "-right-8"} top-0`}>
+                <CopyButton textToCopy={isCodeSnippet ? code : content} />
+              </div>
+            )}
+          </div>
+          
+          {/* Typing indicator */}
           {isTyping && (
-            <div className="flex items-center mt-1">
-              <span className="text-xs text-gray-300">Typing</span>
+            <div className="flex items-center mt-1 ml-1">
+              <span className="text-xs text-gray-500 dark:text-gray-400">Typing</span>
               <div className="flex ml-1 space-x-1">
-                <div className="w-1.5 h-1.5 rounded-full bg-gray-300 animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-1.5 h-1.5 rounded-full bg-gray-300 animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-1.5 h-1.5 rounded-full bg-gray-300 animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+                <div className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+                <div className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             </div>
           )}
